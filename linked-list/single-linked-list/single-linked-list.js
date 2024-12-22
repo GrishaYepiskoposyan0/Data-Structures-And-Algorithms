@@ -30,10 +30,38 @@ class SingleLinkedList {
         }
         return res
     }
+
+    reverse(head) {
+        let curr = head;
+        let prev = null;
+        let next;
+
+        while(curr){
+            next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+
+    reverseByRecursion(head){
+        if(head === null || head.next === null){
+            return head
+        }
+        const newHead = this.reverseByRecursion(head.next);
+
+        head.next.next = head;
+        head.next = null;
+
+        return newHead
+    }
 }
 
 const singleLinkedList = new SingleLinkedList()
 singleLinkedList.insert(4)
 singleLinkedList.insert(5)
 singleLinkedList.insert(2)
-console.log(singleLinkedList.print())
+console.log(singleLinkedList.reverseByRecursion(singleLinkedList.head))
+console.log(singleLinkedList.reverse(singleLinkedList.head))
+// console.log(singleLinkedList.print())
