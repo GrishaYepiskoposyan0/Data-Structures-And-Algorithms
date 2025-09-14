@@ -17,53 +17,58 @@ class UndirectedGraph {
     }
 
     dfs(start){
-        if(!this.adjacencyList[start]){
-            return;
-        }
+        if(!this.adjacencyList[start]) return;
 
         const stack = [start];
         const result = [];
-        const visited = {};
-        let currentVertex;
+        const visited = new Set();
+        while(stack.length) {
+            const currentVertex = stack.pop();
+            if(!visited.has(currentVertex)) {
+                visited.add(currentVertex);
+                result.push(currentVertex);
 
-        visited[start] = true;
-
-        while(stack.length){
-            currentVertex = stack.pop();
-            result.push(currentVertex);
-
-            this.adjacencyList[currentVertex].forEach(neighbor => {
-                if(!visited[neighbor]){
-                    visited[neighbor] = true;
-                    stack.push(neighbor)
-                }
-            })
+                this.adjacencyList[currentVertex].forEach((neighbor) => {
+                    if (!visited.has(neighbor)) {
+                        stack.push(neighbor);
+                    }
+                })
+            }
         }
-        return result
+        return result;
+    }
+
+    dfsRecursive(start, visited = new Set(), result = []) {
+        if(!start || visited.has(start)) return;
+        visited.add(start);
+        result.push(start);
+        for (const neighbor of this.adjacencyList[start]) {
+            this.dfsRecursive(neighbor, visited, result);
+        }
+        return result;
     }
 
     bfs(start){
-        if(!this.adjacencyList[start]){
-            return;
-        }
+        if(!this.adjacencyList[start]) return;
 
         const queue = [start];
-        const visited = {}
-        visited[start] = true;
         const result = [];
-        let currentVertex;
+        const visited = new Set();
+        visited.add(start);
+
         while(queue.length){
-            currentVertex = queue.shift();
+            const currentVertex = queue.shift();
             result.push(currentVertex);
 
-            this.adjacencyList[currentVertex].forEach(neighbor => {
-                if(!visited[neighbor]){
-                    visited[neighbor] = true;
+            this.adjacencyList[currentVertex].forEach((neighbor) => {
+                if(!visited.has(neighbor)) {
+                    visited.add(neighbor);
                     queue.push(neighbor);
                 }
             })
+
         }
-        return result
+        return result;
     }
 }
 
@@ -83,6 +88,7 @@ undirectedGraph.addEdge('D', 'B')
 undirectedGraph.addEdge('D', 'F')
 undirectedGraph.addEdge('E', 'F')
 undirectedGraph.addEdge('E', 'A')
-console.log(undirectedGraph.dfs('A'))
-console.log(undirectedGraph.bfs('A'))
+console.log("dfs ===>",undirectedGraph.dfs('A'))
+console.log("dfsRecursive ===>",undirectedGraph.dfsRecursive('A'))
+console.log("bfs ===>",undirectedGraph.bfs('A'))
 console.log(undirectedGraph.adjacencyList)

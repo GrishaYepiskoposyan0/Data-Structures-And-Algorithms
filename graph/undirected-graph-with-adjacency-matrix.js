@@ -25,9 +25,61 @@ class UndirectedGraph {
 
     printMatrix(){
         console.log(' ', this.vertices.join(' '))
-        for (let i = 0; i < this.adjacencyMatrix.length; i++) {
+        for (let i = 0; i < this.vertices.length; i++) {
             console.log(this.vertices[i], this.adjacencyMatrix[i].join(' '))
         }
+    }
+
+    dfsRecursive(start, visited = new Set(), result = []){
+        result.push(start);
+        visited.add(start);
+
+        for(let j = 0; j < this.vertices.length; j ++){
+            if(this.adjacencyMatrix[start][j] === 1 && !visited.has(j)){
+                this.dfsRecursive(j, visited, result)
+            }
+        }
+        return result;
+    }
+
+    dfs(start){
+        const visited = new Set();
+        const result = [];
+        const stack = [start];
+
+        while(stack.length){
+            const currentVertex = stack.pop();
+            if(!visited.has(currentVertex)){
+                visited.add(currentVertex);
+                result.push(currentVertex);
+                for (let i = this.vertices.length - 1; i >= 0; i--) {
+                    if (this.adjacencyMatrix[currentVertex][i] === 1 && !visited.has(i)) {
+                        stack.push(i);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    bfs(start){
+        const queue = [start];
+        const visited = new Set();
+        visited.add(start);
+        const result = [];
+
+        while(queue.length){
+            const currentVertex = queue.shift();
+            result.push(currentVertex);
+
+            for(let i = 0; i < this.adjacencyMatrix.length; i ++){
+                if(this.adjacencyMatrix[start][i] === 1 && !visited.has(i)){
+                    queue.push(i);
+                    visited.add(i);
+                }
+            }
+        }
+        return result;
     }
 }
 
@@ -40,3 +92,7 @@ undirectedGraph.addEdge('A', 'B')
 undirectedGraph.addEdge('A', 'C')
 undirectedGraph.addEdge('C', 'B')
 undirectedGraph.printMatrix()
+
+console.log('dfsRecursive ===>', undirectedGraph.dfsRecursive(0))
+console.log('bfs ===>', undirectedGraph.bfs(0))
+console.log('dfs ===>', undirectedGraph.dfs(0))
